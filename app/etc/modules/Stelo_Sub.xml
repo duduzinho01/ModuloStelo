@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <Stelo_Sub>
+            <active>true</active>
+            <codePool>community</codePool>
+            <version>1.6.0</version>
+        </Stelo_Sub>
+    </modules>
+</config> 

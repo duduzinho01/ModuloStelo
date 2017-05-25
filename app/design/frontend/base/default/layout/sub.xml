@@ -1,0 +1,77 @@
+<?xml version="1.0"?>
+<!--
+/*
+ * Soulmkt
+ * http://www.soulmkt.com.br
+
+ */
+ -->
+<layout>
+
+    <sub_onepage_success translate="label">
+      <label>Stelo Checkout Success</label>
+
+ 
+      <reference name="root">
+          <action method="setTemplate"><template>page/1column.phtml</template></action>
+      </reference>
+
+      <reference name="content">
+          <block type="checkout/onepage_success" name="checkout.success" template="sub/checkout/success.phtml">
+         
+          </block>
+      </reference>
+
+    </sub_onepage_success>
+    
+    <subboleto_onepage_success translate="label">
+      <label>Stelo Checkout Success</label>
+
+    
+
+      <reference name="root">
+          <action method="setTemplate"><template>page/1column.phtml</template></action>
+      </reference>
+
+      <reference name="content">
+          <block type="checkout/onepage_success" name="checkout.success" template="sub/checkout/success.phtml">
+         
+          </block>
+      </reference>
+
+    </subboleto_onepage_success>
+    
+    <checkout_onepage_index>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>sub/css/stelo.css</name><params/></action>
+            <action method="addItem"> <name>https://carteira.stelo.com.br/static/js/component/register-card.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>sub/js/generate_token.js</name><params/></action>
+        </reference>
+    </checkout_onepage_index>
+    
+    <idecheckoutvm_index_index>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>sub/css/stelo.css</name><params/></action>
+            <action method="addItem"> <name>https://carteira.stelo.com.br/static/js/component/register-card.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>sub/js/generate_token.js</name><params/></action>
+        </reference>
+    </idecheckoutvm_index_index>
+        
+    <firecheckout_index_index>
+        <reference name="head">
+            <action method="addItem"><type>skin_css</type><name>sub/css/stelo.css</name><params/></action>
+            <action method="addItem"> <name>https://carteira.stelo.com.br/static/js/component/register-card.js</name><params/></action>
+            <action method="addItem"><type>skin_js</type><name>sub/js/generate_token.js</name><params/></action>
+        </reference>
+    </firecheckout_index_index>
+
+    <onestepcheckout_index_index>
+      <reference name="head">
+          <action method="addItem"><type>skin_css</type><name>sub/css/stelo.css</name><params/></action>
+          <action method="addItem"> <name>https://carteira.stelo.com.br/static/js/component/register-card.js</name><params/></action>
+          <action method="addItem"><type>skin_js</type><name>sub/js/generate_token.js</name><params/></action>
+      </reference>
+    </onestepcheckout_index_index>
+    
+    
+</layout>

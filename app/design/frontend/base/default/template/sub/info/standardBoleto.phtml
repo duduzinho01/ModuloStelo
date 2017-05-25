@@ -1,0 +1,41 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+$baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);
+?><p>
+    <strong>Pagamento Processado por:</strong>
+</p>
+ <img src="<?php echo $baseUrl; ?>frontend/base/default/sub/images/stelo_logo.png">
+
+<?php
+
+  $_orderid = Mage::app()->getRequest()->getParam('order_id');
+  $_isLogin = ($this->helper('customer')->isLoggedIn())? 1 : 0;
+
+
+  if($_orderid && $_isLogin):
+
+    $_order = Mage::getModel('sales/order')->load($_orderid);
+    $sub = Mage::getModel('sub/subcustom')->load($_order->getIncrementId(), 'mage_id' );
+ 
+
+    if($sub->getStelo_url() && $sub->getStatus() != 'canceled' && $sub->getStatus() != 'processing'): ?> 
+
+    <a href="<?php echo $sub->getStelo_url(); ?>" id="light-sub" style="display: inline-block;float: right;margin-top: 20px;"  lightbox="true" class="openLightbox"> 
+      <img width="150" alt="Logar com Stelo" src="<?php echo $this->getSkinUrl('sub/images/pagueStelo.png') ?>" />
+    </a> 
+
+  <?php endif; ?> 
+
+<?php endif; ?>
+
+<script type="text/javascript">
+  jQuery('#light-sub').click(function(){
+    jQuery.featherlight( jQuery('<iframe width="950" height="600" src="' + jQuery(this).attr('href') + '"/>') )
+    return false;
+  })
+</script>

@@ -1,0 +1,41 @@
+<?php
+
+/* 
+ * Soulmkt 
+ * http://www.soulmkt.com.br
+ */
+
+$baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);
+        
+        
+
+        
+$steloData = $this->getInstallment($this->getInfo()->getOrder());
+
+       
+?>
+<?php if(!empty($steloData['id'])): ?>
+  <p><b>Stelo Transparente</b> - <?php echo ($steloData["cc_flag"])? "Cartão de crédito" : "Boleto" ?></p>
+  <p><img src="<?php echo $baseUrl; ?>frontend/base/default/sub/images/stelo_logo.png"></p>
+
+  <?php 
+  if($steloData["cc_flag"]){
+      echo "<p>O pagamento foi realizado em <b>". $steloData["installment"] . "</b> parcela(s) </p>";
+      echo "<p>Número do cartão: ".$steloData["cc_number"]."</p>";
+      echo "<p>Bandeira do cartão: ".$steloData["cc_flag"]."</p>";
+      echo "<p>TID: ".$steloData["tid"]."</p>";
+      echo "<p>NSU: ".$steloData["nsu"]."</p>";
+      if (isset($steloData["autorization_id"])) { 
+        echo "<p>Autorization ID: ".$steloData["autorization_id"]."</p>";
+      }
+  }
+  
+  echo "<p>ID pedido Stelo: ". $steloData['id']."</p>";  
+
+  if (!empty($steloData["url"]) && $steloData["installment"] < 100 && $steloData["url"] != "0") {
+    echo '<br/><a href="'.$steloData["url"].'">Imprimir 2ª via boleto</a>';
+  }
+  ?>   
+<?php else: ?>
+  <p><b>Stelo Transparente</b></p>
+<?php endif; ?>

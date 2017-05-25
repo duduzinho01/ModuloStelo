@@ -1,0 +1,211 @@
+<?php
+$_code = $this->getMethodCode();
+$baseUrl = Mage::getBaseUrl(Mage_Core_Model_Store::URL_TYPE_SKIN);
+
+$idUnico = rand(0, 1000000) . rand(0, 1000000);
+
+Mage::getSingleton('core/session')->setSecureCode($idUnico);
+?>
+
+
+
+<ul class="form-list" id="payment_form_<?php echo $_code ?>" style="display:none; width: 100%;">
+<?php 
+echo '<iframe src="https://carteira.stelo.com.br/transaction/transfer?idUnico='.$idUnico.'" width="0" marginwidth="0" height="0" marginheight="0" frameborder="0"></iframe>';
+
+?>
+    <li class="sub-images">
+
+    <label for="a"><img src="<?php echo $this->getSkinUrl('sub/images/payment_types/cartaoBandeiraStelo.png', array('_secure'=>true))?>" ><img src="<?php echo $this->getSkinUrl('sub/images/payment_types/cartaoBandeiraSteloNo.png', array('_secure'=>true))?>" id="bandeiras"></label>
+
+
+
+    <!--<div class="button" >
+      
+        
+    
+        
+        <label for="b"><img src="<?php echo $baseUrl; ?>frontend/base/default/sub/images/payment_types/mastercard.png"></label>
+    
+        <label for="c"><img src="<?php echo $baseUrl; ?>frontend/base/default/sub/images/payment_types/visa.png"></label>
+  
+     
+        <label for="d"><img src="<?php echo $baseUrl; ?>frontend/base/default/sub/images/payment_types/amex.png"></label>
+        
+    </div>   -->
+</li>
+    <li class="sub-cc_flag">
+        <div class="input-box">            
+            <input type="hidden" title="<?php echo $this->__('Card Flag') ?>" class="input-text required-entry cc-flag" id="<?php echo $_code ?>_cc_flag" name="payment[cc_flag]" value="<?php echo $this->escapeHtml($this->getInfoData('cc_flag')) ?>" />
+        </div>
+    </li>
+    <li class="sub-cc_owner">
+        <label for="<?php echo $_code ?>_cc_owner" class="required"><em>*</em><?php echo $this->__('Nome do Proprietário') ?></label>
+        <div class="input-box">
+            <input type="text" title="<?php echo $this->__('Name on Card') ?>" class="input-text required-entry" id="<?php echo $_code ?>_cc_owner" name="payment[cc_owner]" value="<?php echo $this->escapeHtml($this->getInfoData('cc_owner')) ?>" />
+        </div>
+    </li>
+     <li class="sub-cc_number">
+        <label for="<?php echo $_code ?>_cc_number" class="required validate-cc-number"><em>*</em><?php echo $this->__('Número do Cartão') ?></label>
+        <div class="input-box">
+            <input type="tel" title="<?php echo $this->__('Number of Card') ?>" class="input-text required-entry" id="<?php echo $_code ?>_card_num" name="payment[card_num]" value="<?php echo $this->escapeHtml($this->getInfoData('cc_number')) ?>" />
+        </div>
+    </li>
+     <li class="sub-data">
+        <label for="<?php echo $_code ?>_expiration" class="required"><em>*</em><?php echo $this->__('Data de Expiração') ?></label>
+        <div class="input-box">
+            <div class="v-fix">
+                <select id="<?php echo $_code ?>_expiration" name="payment[cc_exp_month]" class="month validate-cc-exp required-entry">
+                    <?php 
+                    for($i=1; $i<=12; $i++){
+                    ?>
+                    <option value="<?php echo $i; ?>"<?php if($i==1): ?> selected="selected"<?php endif ?>><?php echo $i; ?></option>
+                    <?php 
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="v-fix">
+                <?php $year = date("Y"); 
+                
+                      $expirLimit = $year + 10;
+                ?>
+                <select id="<?php echo $_code ?>_expiration_yr" name="payment[cc_exp_year]" class="year required-entry">
+                <?php while($year <= $expirLimit){ ?>
+                    <option value="<?php echo $year ?>" <?php if($year==$expirLimit-10): ?> selected="selected"<?php endif ?>><?php echo $year ?></option>
+                <?php $year++;
+                } 
+                ?>
+                </select>
+            </div>
+        </div>
+    </li>
+    <li class="sub-cvv">
+        <label for="<?php echo $_code ?>_cc_cid"  class="required"><em>*</em><?php echo $this->__('Número de Verificação (cvv)') ?></label>
+        <div class="input-box">
+            <div class="v-fix">
+                <input type="tel" title="<?php echo $this->__('Numero de Verificacao') ?>" class="input-text cvv required-entry validate-cc-cvn" id="<?php echo $_code ?>_cc_cid" name="payment[cc_cid]" value="" />
+            </div>
+        </div>
+    </li>
+    
+    <li class="sub-parcelas">
+        
+        <?php
+            $installmentMax = Mage::helper('sub')->getInstallmentMax();
+            $installmentMinValue = Mage::helper('sub')->getInstallmentMinValue();
+            $totalOrderValue = $this->getOrderAmount();
+          if($totalOrderValue > $installmentMinValue){
+            while(($totalOrderValue / $installmentMax) < $installmentMinValue){
+                  $installmentMax--;
+            }
+          }else{
+              $installmentMax = 0;
+          } 
+
+        ?>
+                
+        <label for="<?php echo $_code ?>_expiration" class="required"><em>*</em><?php echo $this->__('Parcelamento') ?></label>
+        <div class="input-box">
+            <div class="v-fix">
+                <select type="text" title="<?php echo $this->__('Parcelamento') ?>" class="input-text required " id="<?php echo $_code ?>__installment" name="payment[installment]" value="<?php echo $this->htmlEscape($this->getInfoData('installment')) ?>">
+                    <?php 
+                    if($installmentMax != 0){
+                    for($i=1; $i<=$installmentMax; $i++){
+                    ?>
+                    <option value="<?php echo $i; ?>"<?php if($i==1): ?> selected="selected"<?php endif ?>><?php echo $i."x de R$".number_format(($totalOrderValue / $i), 2, ',', ' '); ?></option>
+                    <?php 
+                    }
+                    }else{
+                      ?>
+                     <option value="1" selected="selected"><?php echo "1x de R$". number_format($totalOrderValue, 2, ',', ' '); ?></option>
+                      <?php
+                    }
+                    ?>
+                </select>
+            </div>
+    </li>
+
+    <div class="error-server" style="display:none">Favor verifique os dados do cartão e tente novamente clicando em validar</div>
+    
+    <!------------------------------------
+       -->
+
+  <!--     <li>
+        <label for="<?php echo $_code ?>_installment" class="required"><em>*</em><?php echo $this->__('Parcelamento') ?></label>
+        <span class="input-box">
+         <input type="text" title="<?php echo $this->__('Parcelamento') ?>" class="input-text " id="<?php echo $_code ?>__installment" name="payment[installment]" value="<?php echo $this->htmlEscape($this->getInfoData('installment')) ?>" />
+       </span>
+    </li>
+
+     -->
+
+
+
+    <li class="sub-validar">
+        <span class="input-box">
+            <div class="validate-stelo" style="display:none;"><span>Validar</span></div>
+        </span>
+        <span class="input-box">
+            <input type="text" style="display:none;" title="<?php echo $this->__('Token:') ?>" class="input-text" id="<?php echo $_code ?>_token" name="payment[token]" value="<?php echo $this->htmlEscape($this->getInfoData('token')) ?>" />
+        </span>
+    </li>
+    
+    
+     
+
+
+</ul>
+
+
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+    jQuery('div#checkout-payment-method-load .sp-methods dt input').change(function(){
+        if(jQuery(this).attr('id') == "p_method_sub"){
+            jQuery('input#sub_token').show();
+        }else{
+            jQuery('input#sub_token').hide();
+        }
+    });
+    jQuery('#sub_cc_cid').keyup(function(){
+    var s = jQuery(this).val();
+
+    if(s.length >= 3){
+        var owner = jQuery('#sub_cc_owner').val();
+        var number = jQuery('#sub_card_num').val();
+        if(owner.length > 2 && number.length > 10 ){
+            generateToken();
+            
+        }
+        
+    } 
+    });
+    jQuery('.validate-stelo').click(function(){
+        var s = jQuery('#sub_cc_cid').val();
+        if(s.length >= 3){
+            var owner = jQuery('#sub_cc_owner').val();
+            var number = jQuery('#sub_card_num').val();
+            if(owner.length > 2 && number.length > 10 ){
+                generateToken();
+                jQuery('.error-server').hide();
+                jQuery('.validate-stelo').hide();
+                
+            }else{
+                jQuery('.error-server').show();
+                jQuery('.validate-stelo').show();
+            }
+
+        }else{
+            jQuery('.error-server').show();
+            jQuery('.validate-stelo').show();
+        }
+    });
+});
+
+
+</script>
+
+
+
+
